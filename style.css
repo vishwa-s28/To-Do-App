@@ -1,0 +1,139 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(133, 133, 245);
+  font-family: "Poppins", sans-serif;
+}
+.container {
+  /* height: 80%; */
+  width: 90%;
+  margin: 60px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 20px;
+}
+.sub-container {
+  display: grid;
+  justify-items: center;
+  /* background-color: aqua; */
+  /* height: 30%; */
+}
+.task-input {
+  height: 52px;
+  padding: 25px 5px;
+  position: relative;
+  display: flex;
+  gap: 10px;
+  width: 90%;
+}
+#input {
+  /* height: 99%; */
+  width: 80%;
+  outline: none;
+  font-size: 15px;
+  border-radius: 5px;
+  padding: 0 30px;
+  border-style: solid;
+  border-color: #d4cccc;
+  /* border: 1px solid #999; */
+}
+.add-btn {
+  background-color: blue;
+  border-radius: 5px;
+  color: white;
+  width: 15%;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+.all-link {
+  width: 90%;
+  height: 40px;
+  margin-bottom: 10px;
+  /* background-color: aquamarine; */
+}
+.all-link a {
+  text-decoration: none;
+  color: black;
+  font-weight: 100;
+  float: left;
+  margin: 10px;
+}
+.all-link a.active {
+  color: blue;
+  /* font-weight: bold; */
+}
+
+.clear-btn {
+  float: right;
+  background-color: red;
+  border-radius: 5px;
+  color: white;
+  width: 15%;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+}
+.main-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin: 10px 0;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  /* background-color: aquamarine; */
+  max-height: 400px;
+  min-height: auto;
+}
+.main-container::-webkit-scrollbar {
+  width: 8px;
+}
+.main-container::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 20px;
+}
+.main-container::-webkit-scrollbar-thumb {
+  background-color: blue;
+  border-radius: 10px;
+  border: 2px solid white;
+}
+.todos {
+  width: 90%;
+  padding: 15px 0;
+  border-radius: 10px;
+  /* margin-bottom: 10px; */
+}
+.todos:hover {
+  background-color: rgb(231, 231, 236);
+}
+.todos #todos {
+  float: left;
+  cursor: pointer;
+}
+.btn {
+  float: right;
+}
+
+.edit {
+  border-radius: 5px;
+  color: green;
+  /* border: 1px solid green; */
+  border: none;
+  padding: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.delete {
+  border-radius: 5px;
+  color: red;
+  padding: 5px;
+  /* border: 1px solid red; */
+  border: none;
+  margin-right: 10px;
+  cursor: pointer;
+}

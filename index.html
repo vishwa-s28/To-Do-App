@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>To-do App</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sub-container">
+        <div class="task-input">
+          <input id="input" type="text" placeholder="Add a new task" />
+          <button class="add-btn" onclick="addTodo()">Add</button>
+        </div>
+        <div class="all-link">
+          <a href="#" class="active" onclick="filterTodos('all')">All</a>
+          <a href="#" onclick="filterTodos('pending')">Pending</a>
+          <a href="#" onclick="filterTodos('completed')">Completed</a>
+          <button class="clear-btn" onclick="clearAllTodos()">Clear All</button>
+        </div>
+      </div>
+      <hr color="#d4cccc" />
+      <div class="main-container">
+        <!-- <div class="todos">
+          <label id="todos">
+            <input type="checkbox" />
+            ES6 features
+          </label>
+          <div class="btn">
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
