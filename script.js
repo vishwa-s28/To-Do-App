@@ -57,6 +57,8 @@ function renderTodos() {
   document.querySelectorAll(".delete").forEach((deleteButton) => {
     deleteButton.addEventListener("click", deleteTodo);
   });
+
+  document.getElementById("input").focus;
 }
 
 function toggleStatus(event) {
@@ -111,21 +113,23 @@ function filterTodos(filter) {
 function addTodo() {
   const input = document.getElementById("input");
   const newTodoName = input.value.trim();
-
-  if (newTodoName) {
-    const todos = getTodosFromLocalStorage();
-    const newTodo = {
-      name: newTodoName,
-      status: "pending",
-    };
-    todos.push(newTodo);
-    saveTodosToLocalStorage(todos);
-    input.value = "";
-    renderTodos();
+  console.log(newTodoName);
+  if (!newTodoName) {
+    alert("please enter task");
+    return;
   }
+
+  const todos = getTodosFromLocalStorage();
+  const newTodo = {
+    name: newTodoName,
+    status: "pending",
+  };
+  todos.push(newTodo);
+  saveTodosToLocalStorage(todos);
+  input.value = "";
+  renderTodos();
 }
 
-document.querySelector(".add-btn").addEventListener("click", addTodo);
 document.getElementById("input").addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     addTodo();

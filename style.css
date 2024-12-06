@@ -42,6 +42,9 @@ body {
   border-color: #d4cccc;
   /* border: 1px solid #999; */
 }
+#input:focus {
+  border-color: #9e8f8f;
+}
 .add-btn {
   background-color: blue;
   border-radius: 5px;
