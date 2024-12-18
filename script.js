@@ -108,6 +108,7 @@ async function renderTodos() {
         </div>
       `
       )
+      .sort()
       .join("");
   }
 
