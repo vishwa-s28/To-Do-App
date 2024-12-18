@@ -1,25 +1,90 @@
 let currentFilter = "all";
+const apiUrl = "http://localhost:3000/todos";
 
-function saveTodosToLocalStorage(todos) {
-  localStorage.setItem("todos", JSON.stringify(todos));
+async function getTodosFromServer() {
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const todos = await response.json();
+    return todos;
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    return [];
+  }
 }
 
-function getTodosFromLocalStorage() {
-  const todos = localStorage.getItem("todos");
-  return todos ? JSON.parse(todos) : [];
+async function saveTodoToServer(newTodo) {
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        todo: newTodo.name,
+        status: newTodo.status,
+      }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error adding todo:", error);
+  }
 }
 
-function renderTodos() {
-  const todos = getTodosFromLocalStorage();
+async function updateTodoOnServer(id, updatedTodo) {
+  try {
+    const response = await fetch(`${apiUrl}/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedTodo),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating todo:", error);
+  }
+}
+
+async function deleteTodoOnServer(id) {
+  try {
+    const response = await fetch(`${apiUrl}/${id}`, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error deleting todo:", error);
+  }
+}
+
+async function deleteAllTodosOnServer() {
+  try {
+    const response = await fetch(`${apiUrl}/all`, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error deleting todo:", error);
+  }
+}
+
+async function renderTodos() {
+  const todos = await getTodosFromServer();
   const mainContainer = document.querySelector(".main-container");
 
   const filteredTodos = todos.filter((todo) => {
     if (currentFilter === "all") {
       return true;
     } else if (currentFilter === "pending") {
-      return todo.status === "pending";
+      return todo.status === false;
     } else if (currentFilter === "completed") {
-      return todo.status === "completed";
+      return todo.status === true;
     }
   });
 
@@ -28,17 +93,17 @@ function renderTodos() {
   } else {
     mainContainer.innerHTML = filteredTodos
       .map(
-        (todo, index) => `
+        (todo) => `  
         <div class="todos">
           <label id="todos">
-            <input type="checkbox" data-index="${index}" ${
-          todo.status === "completed" ? "checked" : ""
+            <input type="checkbox" data-id="${todo.id}" ${
+          todo.status === true ? "checked" : ""
         } />
-            <span class="todo-name">${todo.name}</span>
+            <span class="todo-name">${todo.todo}</span>
           </label>
           <div class="btn">
-            <button class="edit" data-index="${index}">Edit</button>
-            <button class="delete" data-index="${index}">Delete</button>
+            <button class="edit" data-id="${todo.id}">Edit</button>
+            <button class="delete" data-id="${todo.id}">Delete</button>
           </div>
         </div>
       `
@@ -58,39 +123,49 @@ function renderTodos() {
     deleteButton.addEventListener("click", deleteTodo);
   });
 
-  document.getElementById("input").focus;
+  document.getElementById("input").focus();
 }
 
-function toggleStatus(event) {
-  const index = event.target.dataset.index;
-  const todos = getTodosFromLocalStorage();
-  todos[index].status = event.target.checked ? "completed" : "pending";
-  saveTodosToLocalStorage(todos);
+async function toggleStatus(event) {
+  const id = event.target.dataset.id;
+  const todos = await getTodosFromServer();
+  const todo = todos.find((todo) => todo.id === parseInt(id));
+
+  const updatedTodo = {
+    todo: todo.todo,
+    status: event.target.checked ? true : false,
+  };
+
+  await updateTodoOnServer(id, updatedTodo);
   renderTodos();
 }
 
-function editTodo(event) {
-  const index = event.target.dataset.index;
-  const todos = getTodosFromLocalStorage();
-  const newName = prompt("Edit your todo:", todos[index].name);
+async function editTodo(event) {
+  const id = event.target.dataset.id;
+  const todos = await getTodosFromServer();
+  const todo = todos.find((todo) => todo.id === parseInt(id));
 
-  if (newName && newName !== todos[index].name) {
-    todos[index].name = newName;
-    saveTodosToLocalStorage(todos);
+  const newName = prompt("Edit your todo:", todo.todo);
+
+  if (newName && newName !== todo.todo) {
+    const updatedTodo = {
+      todo: newName,
+      status: todo.status,
+    };
+    await updateTodoOnServer(id, updatedTodo);
     renderTodos();
   }
 }
 
-function deleteTodo(event) {
-  const index = event.target.dataset.index;
-  const todos = getTodosFromLocalStorage();
-  todos.splice(index, 1);
-  saveTodosToLocalStorage(todos);
+async function deleteTodo(event) {
+  const id = event.target.dataset.id;
+  await deleteTodoOnServer(id);
   renderTodos();
 }
 
 function clearAllTodos() {
-  localStorage.removeItem("todos");
+  alert("Are you sure to clear all todos?");
+  deleteAllTodosOnServer();
   renderTodos();
 }
 
@@ -110,22 +185,20 @@ function filterTodos(filter) {
   }
 }
 
-function addTodo() {
+async function addTodo() {
   const input = document.getElementById("input");
   const newTodoName = input.value.trim();
-  console.log(newTodoName);
   if (!newTodoName) {
     alert("please enter task");
     return;
   }
 
-  const todos = getTodosFromLocalStorage();
   const newTodo = {
     name: newTodoName,
-    status: "pending",
+    status: false,
   };
-  todos.push(newTodo);
-  saveTodosToLocalStorage(todos);
+
+  await saveTodoToServer(newTodo);
   input.value = "";
   renderTodos();
 }
